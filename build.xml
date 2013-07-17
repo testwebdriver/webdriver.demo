@@ -1,0 +1,97 @@
+<!DOCTYPE project[]>
+<project name="TestngFramework" default="usage" basedir=".">
+<property environment="env"/>
+	
+  <property name="ws.home"      value="${basedir}"/>
+  <property name="ws.jars"      value="C:\Users\Aruna\SeleniumUtitlities\jars\jars"/>
+	<!--property name="ws.jars"      value="${ws.home}/lib"/-->
+  <property name="test.dest"   value="${ws.home}/build"/>
+  <property name="test.src"      value="${ws.home}/src"/>
+  <property name="ng.result"      value="test-output"/>
+	
+    <target name ="setClassPath" unless="test.classpath">
+	  <path id ="classpath_jars">
+	      <fileset dir="${ws.jars}" includes="*.jar"/>
+	  </path>
+	  <pathconvert pathsep=":" property="test.classpath" refid="classpath_jars"/>
+   </target>
+		
+	
+	<target name="init" depends="setClassPath">
+	 <tstamp>
+	      <format property ="start.time" pattern="mm/dd/yyyy  hh:mm  aa"/>
+	 </tstamp>
+	<condition property="ANT" 
+		value="${env.ANT_HOME}/bin/ant.bat" 
+		else ="${env.ANT_HOME}/bin/ant">
+	  <os family="windows"/>
+	</condition>
+		<taskdef name="testng" classpath="${test.classpath}"
+				classname="org.testng.TestNGAntTask"/>
+	</target>  
+
+  <target name="all">
+  </target>
+
+  <target name="clean"
+   description="Delete old build and dist directories">
+    <delete dir="${test.dest}"/>
+  </target>
+
+  <target name="compile" depends="init, clean"
+   description="Compile Java sources">
+   <delete includeemptydirs="true" quiet="true">
+   	 <fileset dir ="${test.dest}" includes="**/*"/>
+   	</delete>
+  	<echo message= "making directory..."/>
+    <!-- Compile Java classes as necessary -->
+    <mkdir    dir="${test.dest}"/>
+  	<echo message="classpath--------:${test.classpath}"/>
+  	<echo message="compling....."/>
+    <javac srcdir="${test.src}"
+          destdir="${test.dest}"
+            debug="true"
+            classpath ="${test.classpath}">
+    </javac>
+   </target>
+
+<target name="build"  depends="init">
+</target>
+
+	<target name="run" depends="compile">
+	  <testng classpath="${test.classpath}:${test.dest}"> 
+	    <xmlfileset dir="${ws.home}" includes="testNg.xml"/>
+	</testng>
+	</target>
+
+	<target name="usage">
+	<echo>
+	ant run will execute the test
+	</echo>
+	</target>
+	<path id="test.c">
+		<fileset dir="${ws.jars}" includes="*.jar"/>
+	</path>
+	
+	<target name="makexsltreports">
+	<mkdir dir="${ws.home}/XSLT_Reports/output"/>
+	<xslt in ="${ng.result}/testng-results.xml" style="src/xslt/testng-results.xsl"
+	        out="${ws.home}/XSLT_Reports/output/index.html" classpathref="test.c" processor="SaxonLiaison">
+	   <param name="testNgXslt.outputDir" expression="${ws.home}/XSLT_Reports/output/"/>
+	   <param name="testNgXslt.showRuntimeTotals" expression="true"/>
+	</xslt>
+	</target>
+	
+	<target name="startserver" description="Starts a Selenium Server in the background">
+	        <java jar="${ws.jars}/selenium-server-standalone-2.33.0.jar" fork="true" spawn="true"/>
+	    </target>
+		
+	    <target name="stopserver" description="Stops your local Selenium Server">
+	        <get taskname="selenium-shutdown" 
+	           src="http://localhost:4444/selenium-server/driver/? cmd=shutDownSeleniumServer" 
+	           dest="result.txt" 
+	           ignoreerrors="true" />
+	    </target>
+	
+	
+</project>

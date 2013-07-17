@@ -1,0 +1,12 @@
+
+<suite name= "My Example Suites">
+
+<test name = "Testng 1">
+	<classes>
+		<class name = "calculate"> </class>
+	</classes>
+</test>
+
+
+
+</suite>
