@@ -6,7 +6,7 @@ public class calculate {
 		//result = a+b;
 		System.out.println(a+b);
 		System.out.println(a-b);
-		
+	    System.out.println(a*b);
 		
 		
 		
