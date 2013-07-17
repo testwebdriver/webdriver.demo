@@ -1,15 +1,20 @@
+import org.testng.annotations.Test;
+
 
 public class calculate {
-	public static void main(String args[]){
-		int a=50, b=10;
-		int result;
-		//result = a+b;
-		System.out.println(a+b);
-		System.out.println(a-b);
-	    System.out.println(a*b);
-		System.out.println(a/b);
-		
+
+	@Test
+	public void perform(){
+     int a=50;
+     int b=5;
+     System.out.println(a+b);
+     System.out.println(a-b);
+     System.out.println(a+b);
+     System.out.println(a/b);
 		
 	}
+	
+	
+	
 
 }
